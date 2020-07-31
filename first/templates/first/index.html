@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <a href="{% url 'about' %}">About!</a>
+    <a href="{% url 'product' %}">Product!</a>
+    <a href="{% url 'notice' %}">Notice!</a>
+    <a href="{% url 'qna' %}">QnA!</a>
+
+    <h1>RUBISCO</h1>
+    <h4>저희 페이지를 방문해주셔서 감사합니다!!</h4>
+    <p>{{ current_date }}</p>
+    <img src="{% static 'first/small.jpg' %}", width="500px"/>
+    <br>
+    <p>여기가 허접해 보이는 이유는 css로 꾸미지 않았기 때문입니다!</p>
+    <p>하지만 장고 연습용이라서 그건 안했어요 ㅎㅎ,,</p>
+    <p>그래서 안꾸민겁니다,,, 기능만 봐쥬세욥,,,,</p>
+    <p><del>이거 하는데 한참 걸림 너무 힘드러요ㅠㅠ</del></p>
+
+</body>
+</html>
