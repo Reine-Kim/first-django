@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
-from third.models import Restaurant
+from django.shortcuts import render, get_object_or_404, redirect
+from third.models import Restaurant, Review
 from django.core.paginator import Paginator
-from third.forms import RestaurantForm
+from third.forms import RestaurantForm, ReviewForm
 from django.http import HttpResponseRedirect
 # Create your views here.
 
@@ -45,10 +45,11 @@ def update(request):
     return HttpResponseRedirect('/third/list/')
 
 
-def detail(request):
-    if 'id' in request.GET:
-        item = get_object_or_404(Restaurant, pk=request.GET.get('id'))
-        return render(request, 'third/detail.html', {'item':item})
+def detail(request, id):
+    if 'id' is not None:
+        item = get_object_or_404(Restaurant, pk=id)
+        reviews = Review.objects.filter(restaurant=item).all()
+        return render(request, 'third/detail.html', {'item':item, 'reviews':reviews})
     return HttpResponseRedirect('/third/list/')
 
 
@@ -57,3 +58,23 @@ def delete(request):
         item = get_object_or_404(Restaurant, pk=request.GET.get('id'))
         item.delete()
     return HttpResponseRedirect('/third/list/')
+
+
+def review_create(request, restaurant_id):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            new_item = form.save()
+        return redirect('restaurant-detail', id=restaurant_id)
+    item = get_object_or_404(Restaurant, pk=restaurant_id)
+    form = ReviewForm(initial={'restaurant':item}) #어떤 레스토랑 필드인지 선택
+    return render(request, 'third/review_create.html', {'form':form, 'item':item})
+    #바로 위 함수에서 쓴 HttpResponseRedirect 쓰면 주소 바뀔때 다 고쳐줘야함
+    #근데 redirect 쓰면 views.py 기반이기 때문에 안바꿔줘도 그냥 잘됨
+
+
+def review_delete(request, restaurant_id, review_id):
+    item = get_object_or_404(Review, pk=review_id)
+    item.delete()
+
+    return redirect('restaurant-detail', id=restaurant_id)
